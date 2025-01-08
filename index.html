@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resilience Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">Car Resilience Calculator</h1>
+        <form id="calculatorForm" class="space-y-4">
+            <div>
+                <label for="car1Weight" class="block text-sm font-medium text-gray-700">Car 1 Weight (kg)</label>
+                <input type="number" id="car1Weight" class="mt-1 block w-full rounded border-gray-300 shadow-sm" required>
+            </div>
+            <div>
+                <label for="car1Velocity" class="block text-sm font-medium text-gray-700">Car 1 Velocity (m/s)</label>
+                <input type="number" id="car1Velocity" class="mt-1 block w-full rounded border-gray-300 shadow-sm" required>
+            </div>
+            <div>
+                <label for="car2Weight" class="block text-sm font-medium text-gray-700">Car 2 Weight (kg)</label>
+                <input type="number" id="car2Weight" class="mt-1 block w-full rounded border-gray-300 shadow-sm" required>
+            </div>
+            <div>
+                <label for="car2Velocity" class="block text-sm font-medium text-gray-700">Car 2 Velocity (m/s)</label>
+                <input type="number" id="car2Velocity" class="mt-1 block w-full rounded border-gray-300 shadow-sm" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Calculate</button>
+        </form>
+
+        <div id="result" class="mt-6 hidden">
+            <h2 class="text-xl font-semibold">Result:</h2>
+            <p id="resilienceType" class="mt-2 text-gray-700"></p>
+            <p id="remainingForce" class="mt-1 text-gray-700"></p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('calculatorForm');
+        const resultDiv = document.getElementById('result');
+        const resilienceType = document.getElementById('resilienceType');
+        const remainingForce = document.getElementById('remainingForce');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const car1Weight = parseFloat(document.getElementById('car1Weight').value);
+            const car1Velocity = parseFloat(document.getElementById('car1Velocity').value);
+            const car2Weight = parseFloat(document.getElementById('car2Weight').value);
+            const car2Velocity = parseFloat(document.getElementById('car2Velocity').value);
+
+            const car1Momentum = car1Weight * car1Velocity;
+            const car2Momentum = car2Weight * car2Velocity;
+
+            const totalMomentum = car1Momentum + car2Momentum;
+
+            // Assuming collision is perfectly elastic for calculation
+            const remainingMomentum = Math.abs(car1Momentum - car2Momentum);
+
+            let resilience = "";
+            if (remainingMomentum === 0) {
+                resilience = "Perfectly Resilient";
+            } else if (remainingMomentum < totalMomentum * 0.5) {
+                resilience = "Somewhat Resilient";
+            } else {
+                resilience = "Non-Resilient";
+            }
+
+            resilienceType.textContent = `Resilience Type: ${resilience}`;
+            remainingForce.textContent = `Remaining Force: ${remainingMomentum.toFixed(2)} Ns`;
+
+            resultDiv.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
